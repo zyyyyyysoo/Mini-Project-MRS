@@ -3,7 +3,7 @@ package com.mrs.dto;
 import java.util.ArrayList;
 
 public class Customer {
-	private int id; //cust_seq
+	private int cust_seq; //cust_seq
 	private String name;
 	private String cust_id;
 	private String phone;
@@ -20,20 +20,21 @@ public class Customer {
 		this.email = email;
 		this.age = age;
 	}
-	public Customer(int id, String name, String cust_id, String phone, String email, int age) {
+	public Customer(int cust_seq, String name, String cust_id, String phone, String email, int age) {
 		super();
-		this.id = id;
+		this.cust_seq = cust_seq;
 		this.name = name;
 		this.cust_id = cust_id;
 		this.phone = phone;
 		this.email = email;
 		this.age = age;
 	}
-	public int getId() {
-		return id;
+
+	public int getCust_seq() {
+		return cust_seq;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setCust_seq(int cust_seq) {
+		this.cust_seq = cust_seq;
 	}
 	public String getName() {
 		return name;
@@ -73,7 +74,7 @@ public class Customer {
 	}
 	@Override
 	public String toString() {
-		return "Customer [id=" + id + ", name=" + name + ", cust_id=" + cust_id + ", phone=" + phone + ", email="
+		return "Customer [cust_seq=" + cust_seq + ", name=" + name + ", cust_id=" + cust_id + ", phone=" + phone + ", email="
 				+ email + ", age=" + age + ", reservation=" + reservation + "]";
 	}
 	

@@ -19,6 +19,13 @@ import com.mrs.exception.RecordNotFoundException;
 import config.ServerInfo;
 
 public class CustomerDAOImpl implements CustomerDAO {
+	
+	private static CustomerDAOImpl dao = new CustomerDAOImpl();
+	
+	private CustomerDAOImpl() {};
+	public static CustomerDAOImpl getInstance() {
+		return dao;
+	}
 
 	public CustomerDAOImpl(String serverIp) throws ClassNotFoundException{
         Class.forName(ServerInfo.DRIVER_NAME);
@@ -44,15 +51,26 @@ public class CustomerDAOImpl implements CustomerDAO {
 		 closeAll(ps, conn);  
 	}
 	
-	public boolean isExist(String id, Connection conn)throws SQLException{
-	    String sql ="SELECT ssn FROM customer WHERE cust_id=?";
+	public boolean isExist(String cust_id, Connection conn)throws SQLException{
+		conn=getConnect();
+	    String sql ="SELECT cust_seq FROM customer WHERE cust_id=?";
 	    PreparedStatement ps = conn.prepareStatement(sql);
 	    
-	    ps.setString(1,id);
+	    ps.setString(1,cust_id);
 	    ResultSet rs = ps.executeQuery();
+//	    System.out.println(rs.next());
 	    return rs.next();
 	}
-
+	public boolean isExist(int cust_seq, Connection conn)throws SQLException{
+		conn=getConnect();
+	    String sql ="SELECT cust_seq FROM customer WHERE cust_seq=?";
+	    PreparedStatement ps = conn.prepareStatement(sql);
+	    
+	    ps.setInt(1,cust_seq);
+	    ResultSet rs = ps.executeQuery();
+//	    System.out.println(rs.next());
+	    return rs.next();
+	}
 	@Override
 	public void addCustomer(Customer cust) throws SQLException, DuplicateException {
 		Connection conn = null;
@@ -60,14 +78,17 @@ public class CustomerDAOImpl implements CustomerDAO {
 		try {
 			conn = getConnect();
 			if(!isExist(cust.getCust_id(), conn)) {
-				String query = "INSERT INTO customer(id,name,cust_id,phone,email,age) VALUES(seq_id,?,?,?,?,?)";
+				String query = "INSERT INTO customer(cust_seq,name,cust_id,phone,email,age) VALUES(seq.NEXTVAL,?,?,?,?,?)";
+//				String query = "INSERT INTO member(id,name,email,phone) VALUES(seq_id.NEXTVAL,?,?,?)";
 				ps = conn.prepareStatement(query);
+				System.out.println(ps+ "되냐...?");
 				ps.setString(1, cust.getName());
 				ps.setString(2, cust.getCust_id());
 				ps.setString(3, cust.getPhone());
 				ps.setString(4, cust.getEmail());
 				ps.setInt(5, cust.getAge());
 				System.out.println(ps.executeUpdate()+" ROW INSERT OK");
+				System.out.println("잘 ... 되냐?");
 			} else {
 				throw new DuplicateException("Customer is already exist");
 			}
@@ -87,7 +108,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 				String query = "DELETE customer WHERE cust_id=?";
 				ps = conn.prepareStatement(query);
 				ps.setString(1, cust_id);
-				System.out.println(ps.executeUpdate()+" ROW DELETE OK");
+				int row = ps.executeUpdate();
+				System.out.println(row+" ROW DELETE OK");
 			} else {
 				throw new RecordNotFoundException("No such a customer");
 			}
@@ -96,7 +118,27 @@ public class CustomerDAOImpl implements CustomerDAO {
 		}
 		
 	}
-
+	
+	@Override
+	public void deleteCustomer(int cust_seq) throws SQLException, RecordNotFoundException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnect();
+			if(isExist(cust_seq, conn)) {
+				String query = "DELETE customer WHERE cust_seq=?";
+				ps = conn.prepareStatement(query);
+				ps.setInt(1, cust_seq);
+				int row = ps.executeUpdate();
+				System.out.println(row+" ROW DELETE OK");
+			} else {
+				throw new RecordNotFoundException("No such a customer");
+			}
+		} finally {
+			closeAll(ps, conn);
+		}
+		
+	}
 	@Override
 	public void updateCustomer(Customer cust) throws SQLException, RecordNotFoundException {
 		Connection conn = null;
@@ -202,7 +244,7 @@ public class CustomerDAOImpl implements CustomerDAO {
         try {
             conn = getConnect();
 
-            String query = "SELECT capacity FROM movie WHERE movie_code=?";
+            String query = "SELECT capacity FROM movie WHERE code=?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, code);
 
@@ -213,6 +255,7 @@ public class CustomerDAOImpl implements CustomerDAO {
                 if(flag) newCapacity = c-1;
                 else newCapacity = c+1;
                 String query1 = "UPDATE movie SET capacity=? WHERE movie_code=?";
+
                 ps = conn.prepareStatement(query1);
                 ps.setInt(1, newCapacity);
                 ps.setInt(2, code);
@@ -236,6 +279,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
             rs = ps.executeQuery();
             if(updateCapacity(movie_code, true)) {
+
             	// 현재 날짜 구하기
                 LocalDate now = LocalDate.now();
          
