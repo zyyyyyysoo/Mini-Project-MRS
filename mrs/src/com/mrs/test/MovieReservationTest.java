@@ -1,5 +1,7 @@
 package com.mrs.test;
 
+import java.sql.SQLException;
+
 import com.mrs.dao.CustomerDAOImpl;
 import com.mrs.dto.Customer;
 
@@ -20,10 +22,16 @@ public class MovieReservationTest {
 //		}
 		
 //		try {
-//			dao.deleteCustomer(null);
+//			dao.deleteCustomer("mj25801");
 //		} catch (Exception e) {
-//			// TODO: handle exception
+//			System.out.println(e.getMessage());
 //		}
+		
+		try {
+			dao.buyTicket("mj25801", 1);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 //	static {

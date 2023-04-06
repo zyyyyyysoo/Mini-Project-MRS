@@ -23,6 +23,7 @@ public interface CustomerDAO {
 	//Customer...CRUD
 	void addCustomer(Customer cust)throws SQLException,DuplicateException;
 	void deleteCustomer(String cust_id)throws SQLException,RecordNotFoundException;
+	void deleteCustomer(int cust_seq) throws SQLException, RecordNotFoundException;
 	void updateCustomer(Customer cust)throws SQLException,RecordNotFoundException;
 
 	//Schedule Manage...CRUD

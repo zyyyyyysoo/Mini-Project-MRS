@@ -53,14 +53,24 @@ public class CustomerDAOImpl implements CustomerDAO {
 	
 	public boolean isExist(String cust_id, Connection conn)throws SQLException{
 		conn=getConnect();
-	    String sql ="SELECT cust_id FROM customer WHERE cust_id=?";
+	    String sql ="SELECT cust_seq FROM customer WHERE cust_id=?";
 	    PreparedStatement ps = conn.prepareStatement(sql);
 	    
 	    ps.setString(1,cust_id);
 	    ResultSet rs = ps.executeQuery();
+//	    System.out.println(rs.next());
 	    return rs.next();
 	}
-
+	public boolean isExist(int cust_seq, Connection conn)throws SQLException{
+		conn=getConnect();
+	    String sql ="SELECT cust_seq FROM customer WHERE cust_seq=?";
+	    PreparedStatement ps = conn.prepareStatement(sql);
+	    
+	    ps.setInt(1,cust_seq);
+	    ResultSet rs = ps.executeQuery();
+//	    System.out.println(rs.next());
+	    return rs.next();
+	}
 	@Override
 	public void addCustomer(Customer cust) throws SQLException, DuplicateException {
 		Connection conn = null;
@@ -98,7 +108,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 				String query = "DELETE customer WHERE cust_id=?";
 				ps = conn.prepareStatement(query);
 				ps.setString(1, cust_id);
-				System.out.println(ps.executeUpdate()+" ROW DELETE OK");
+				int row = ps.executeUpdate();
+				System.out.println(row+" ROW DELETE OK");
 			} else {
 				throw new RecordNotFoundException("No such a customer");
 			}
@@ -107,7 +118,27 @@ public class CustomerDAOImpl implements CustomerDAO {
 		}
 		
 	}
-
+	
+	@Override
+	public void deleteCustomer(int cust_seq) throws SQLException, RecordNotFoundException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnect();
+			if(isExist(cust_seq, conn)) {
+				String query = "DELETE customer WHERE cust_seq=?";
+				ps = conn.prepareStatement(query);
+				ps.setInt(1, cust_seq);
+				int row = ps.executeUpdate();
+				System.out.println(row+" ROW DELETE OK");
+			} else {
+				throw new RecordNotFoundException("No such a customer");
+			}
+		} finally {
+			closeAll(ps, conn);
+		}
+		
+	}
 	@Override
 	public void updateCustomer(Customer cust) throws SQLException, RecordNotFoundException {
 		Connection conn = null;
@@ -213,7 +244,7 @@ public class CustomerDAOImpl implements CustomerDAO {
         try {
             conn = getConnect();
 
-            String query = "SELECT capacity FROM movie WHERE movie_code=?";
+            String query = "SELECT capacity FROM movie WHERE code=?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, code);
 
@@ -221,7 +252,7 @@ public class CustomerDAOImpl implements CustomerDAO {
             if(rs.next()) {
                 int c=rs.getInt("capacity"); //c는 현재 남아 있는 좌석 수
                 int newCapacity = c-1; // 구매하는 경우
-                String query1 = "UPDATE movie SET capacity=? WHERE movie_code=?";
+                String query1 = "UPDATE movie SET capacity=? WHERE code=?";
                 ps = conn.prepareStatement(query1);
                 ps.setInt(1, newCapacity);
                 ps.setInt(2, code);
@@ -243,7 +274,6 @@ public class CustomerDAOImpl implements CustomerDAO {
         try {
             conn=  getConnect();
 
-            rs = ps.executeQuery();
             if(updateCapacity(movie_code)) {
             	// 현재 날짜 구하기
                 LocalDate now = LocalDate.now();
