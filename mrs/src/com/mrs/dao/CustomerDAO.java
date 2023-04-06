@@ -34,12 +34,16 @@ public interface CustomerDAO {
 //   ArrayList<Reservation> getAllSchedule() throws SQLException,RecordNotFoundException; //상영시간-현재시간 >= 5분인 영화 목록을 보여줌
    ArrayList<Reservation> getReservationList(int cust_seq) throws SQLException; // Customer Movie List
    Reservation getReservation(int rsv_code) throws SQLException;
-
+   // 티켓을 구매할 때 영화 테이블의 capacity를 줄이는 함수
+   boolean updateCapacity(int code) throws SQLException;
+   // 티켓을 환불할 때 영화 테이블의 capacity를 늘이는 함수
+   
+   
 	//비지니스 로직
 //   ArrayList<Seat> getSeatList() throws SQLException; // 빈 Seat 목록 조회
 //   void updateSeat(Seat seat) throws SQLException, RecordNotFoundException; // seat상태변경
-   void buyTicket(String cust_id, String sche_code, String seat_name) throws SQLException;
-   void refundTicket(String rsv_code) throws SQLException,InvalidTransactionException,RecordNotFoundException;
+   void buyTicket(String cust_id, int movie_code) throws SQLException;
+   void refundTicket(String cust_id, int movie_code) throws SQLException,InvalidTransactionException,RecordNotFoundException;
 	
    //init
 //   void initSeat() // 현재시간=상영종료시간 -> 모든 시트 사용 가능(이거 아닌데..)
