@@ -20,8 +20,8 @@ public class Movie {
 		this.grade = grade;
 		this.capacity = capacity;
 	}
-	public Movie(int code, String m_name, String d_name, String genre, String company, String grade) {
-		this(code, m_name, d_name, genre, company, grade, D_CAPACITY);
+	public Movie(int movie_code, String m_name, String d_name, String genre, String company, String grade) {
+		this(movie_code, m_name, d_name, genre, company, grade, D_CAPACITY);
 	}
 	
 	public int getMovie_code() {
@@ -62,7 +62,7 @@ public class Movie {
 	}
 	@Override
 	public String toString() {
-		return "Movie [code=" + code + ", m_name=" + m_name + ", d_name=" + d_name + ", genre=" + genre + ", company="
+		return "Movie [movie_code=" + movie_code + ", m_name=" + m_name + ", d_name=" + d_name + ", genre=" + genre + ", company="
 				+ company + ", grade=" + grade + "]";
 	}
 	
