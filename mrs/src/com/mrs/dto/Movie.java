@@ -1,13 +1,13 @@
 package com.mrs.dto;
 
 public class Movie {
-	private String code;
+	private int code;
 	private String m_name;
 	private String d_name;
 	private String genre;
 	private String company;
 	private String grade;
-	public Movie(String code, String m_name, String d_name, String genre, String company, String grade) {
+	public Movie(int code, String m_name, String d_name, String genre, String company, String grade) {
 		super();
 		this.code = code;
 		this.m_name = m_name;
@@ -16,10 +16,10 @@ public class Movie {
 		this.company = company;
 		this.grade = grade;
 	}
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 	public String getM_name() {

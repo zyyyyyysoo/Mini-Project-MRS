@@ -1,14 +1,14 @@
 package com.mrs.dto;
 
 public class Reservation {
-	private String rsv_code;
+	private int rsv_code;
 	private int cust_seq; //fk
 	private String rsv_date;
 	private String seat_name;
 	private String rsv_state;
-	private String movie_code;
-	public Reservation(String rsv_code, int cust_seq, String rsv_date, String seat_name, String rsv_state,
-			String movie_code) {
+	private int movie_code;
+	public Reservation(int rsv_code, int cust_seq, String rsv_date, String seat_name, String rsv_state,
+			int movie_code) {
 		super();
 		this.rsv_code = rsv_code;
 		this.cust_seq = cust_seq;
@@ -17,10 +17,10 @@ public class Reservation {
 		this.rsv_state = rsv_state;
 		this.movie_code = movie_code;
 	}
-	public String getRsv_code() {
+	public int getRsv_code() {
 		return rsv_code;
 	}
-	public void setRsv_code(String rsv_code) {
+	public void setRsv_code(int rsv_code) {
 		this.rsv_code = rsv_code;
 	}
 	public int getCust_seq() {
@@ -47,10 +47,10 @@ public class Reservation {
 	public void setRsv_state(String rsv_state) {
 		this.rsv_state = rsv_state;
 	}
-	public String getMovie_code() {
+	public int getMovie_code() {
 		return movie_code;
 	}
-	public void setMovie_code(String movie_code) {
+	public void setMovie_code(int movie_code) {
 		this.movie_code = movie_code;
 	}
 	@Override
