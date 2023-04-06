@@ -32,7 +32,7 @@ public interface CustomerDAO {
 	
    ArrayList<Movie> getAllMoive() throws SQLException; // All Movie List
 //   ArrayList<Reservation> getAllSchedule() throws SQLException,RecordNotFoundException; //상영시간-현재시간 >= 5분인 영화 목록을 보여줌
-   ArrayList<Reservation> getReservationList(String cust_id) throws SQLException; // Customer Movie List
+   ArrayList<Reservation> getReservationList(int cust_seq) throws SQLException; // Customer Movie List
    Reservation getReservation(String rsv_code) throws SQLException;
 
 	//비지니스 로직
