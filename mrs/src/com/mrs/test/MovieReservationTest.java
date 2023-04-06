@@ -4,6 +4,8 @@ import java.sql.SQLException;
 
 import com.mrs.dao.CustomerDAOImpl;
 import com.mrs.dto.Customer;
+import com.mrs.exception.InvalidTransactionException;
+import com.mrs.exception.RecordNotFoundException;
 
 import config.ServerInfo;
 
@@ -27,10 +29,23 @@ public class MovieReservationTest {
 //			System.out.println(e.getMessage());
 //		}
 		
+//		try {
+//			dao.buyTicket("jh1997", 2);
+//		} catch (SQLException e) {
+//			System.out.println(e.getMessage());
+//		}
+		
 		try {
-			dao.buyTicket("jh1997", 1);
+			dao.refundTicket("jh1997", 2);
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidTransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RecordNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 //		try {

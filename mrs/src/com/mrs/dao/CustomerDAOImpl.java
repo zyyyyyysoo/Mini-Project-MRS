@@ -287,13 +287,13 @@ public class CustomerDAOImpl implements CustomerDAO {
          
                 // 포맷 적용
                 String formatedNow = now.format(formatter);
-                String query1 = "INSERT INTO reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code) VALUES(seq.NEXTVAL,?,?,?,?)";
+                String query1 = "INSERT INTO reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code,cust_id) VALUES(seq.NEXTVAL,?,?,?,?,?)";
                 ps = conn.prepareStatement(query1);
                 ps.setString(1, formatedNow);
                 ps.setString(2, "자유석");
                 ps.setString(3, "예매완료");
                 ps.setInt(4, movie_code);
-                
+                ps.setString(5, cust_id);
                 System.out.println(ps.executeUpdate()+" row buyTicket()....INSERT OK");
             }
 //	            else { //주식이 없는 경우..
