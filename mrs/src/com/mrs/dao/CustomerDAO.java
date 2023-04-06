@@ -33,11 +33,11 @@ public interface CustomerDAO {
    ArrayList<Movie> getAllMoive() throws SQLException; // All Movie List
 //   ArrayList<Reservation> getAllSchedule() throws SQLException,RecordNotFoundException; //상영시간-현재시간 >= 5분인 영화 목록을 보여줌
    ArrayList<Reservation> getReservationList(int cust_seq) throws SQLException; // Customer Movie List
-   Reservation getReservation(String rsv_code) throws SQLException;
+   Reservation getReservation(int rsv_code) throws SQLException;
 
 	//비지니스 로직
    ArrayList<Seat> getSeatList() throws SQLException; // 빈 Seat 목록 조회
-   void updateSeat(Seat seat)throws SQLException,RecordNotFoundException; // Seat 상태 변경
+   public void updateSeat(Seat seat) throws SQLException, RecordNotFoundException; // seat상태변경
    void buyTicket(String cust_id, String sche_code, String seat_name) throws SQLException;
    void refundTicket(String rsv_code) throws SQLException,InvalidTransactionException,RecordNotFoundException;
 	

@@ -170,21 +170,71 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public Reservation getReservation(String rsv_code) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public Reservation getReservation(int rsv_code) throws SQLException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Reservation r = null;
+		try {
+			conn = getConnect();
+			String query = "SELECT cust_seq, rsv_date, seat_name, rsv_state, movie_code FROM reservation WHERE rsv_code=?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, rsv_code);
+			
+			rs = ps.executeQuery();
+			if(rs.next()) {
+				r = new Reservation(rsv_code, rs.getInt("cust_seq"), rs.getString("rsv_date"), rs.getString("seat_name"), rs.getString("rsv_state"), rs.getInt("movie_code"));
+			}
+		} finally {
+			closeAll(rs, ps, conn);
+		}
+		return r;
 	}
 
 	@Override
 	public ArrayList<Seat> getSeatList() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ArrayList<Seat> seats = new ArrayList<>();
+		try {
+			conn = getConnect();
+			String query = "SELECT seat_code, seat_name, seat_state,rsv_code FROM seat";
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				seats.add(new Seat(rs.getInt("seat_code"), rs.getString("seat_name"),rs.getBoolean("seat_state"), rs.getInt("rsv_code")));
+			}
+		} finally {
+			closeAll(rs, ps, conn);
+		}
+		return seats;
 	}
 
 	@Override
+	// 한 예약에 해당하는 seat의 seat_state를 변경하는 것이 목적
+	// seat상태 변경을 위해서 seat_code와 rsv_code가 모두 필요
+	// seat가 Exist한지 check할 필요가 없음
+	// 아래대로 한다? 뭔가 아닌거같은데..
+	// UPDATE seat SET seat_state=? WHERE seat_code=?;
+	// 영화가 끝나면 모든 seat를 available 할 필요가 없긴하네
 	public void updateSeat(Seat seat) throws SQLException, RecordNotFoundException {
-		// TODO Auto-generated method stub
-		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		try {
+			conn = getConnect();
+//			if(isExist(seat.getSeat_code(), conn)) {
+				String query = "UPDATE seat SET seat_state=? WHERE seat_code=?";
+				ps = conn.prepareStatement(query);
+				ps.setBoolean(1, seat.isSeat_state());
+				ps.setInt(2, seat.getSeat_code());
+				System.out.println(ps.executeUpdate()+" ROW UPDATE OK");
+//			} else {
+//				throw new RecordNotFoundException("No such a customer");
+//			}
+		} finally {
+			closeAll(ps, conn);
+		}
 	}
 
 	@Override
