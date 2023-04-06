@@ -17,6 +17,13 @@ import com.mrs.exception.RecordNotFoundException;
 import config.ServerInfo;
 
 public class CustomerDAOImpl implements CustomerDAO {
+	
+	private static CustomerDAOImpl dao = new CustomerDAOImpl();
+	
+	private CustomerDAOImpl() {};
+	public static CustomerDAOImpl getInstance() {
+		return dao;
+	}
 
 	public CustomerDAOImpl(String serverIp) throws ClassNotFoundException{
         Class.forName(ServerInfo.DRIVER_NAME);
@@ -42,11 +49,12 @@ public class CustomerDAOImpl implements CustomerDAO {
 		 closeAll(ps, conn);  
 	}
 	
-	public boolean isExist(String id, Connection conn)throws SQLException{
-	    String sql ="SELECT ssn FROM customer WHERE cust_id=?";
+	public boolean isExist(String cust_id, Connection conn)throws SQLException{
+		conn=getConnect();
+	    String sql ="SELECT cust_id FROM customer WHERE cust_id=?";
 	    PreparedStatement ps = conn.prepareStatement(sql);
 	    
-	    ps.setString(1,id);
+	    ps.setString(1,cust_id);
 	    ResultSet rs = ps.executeQuery();
 	    return rs.next();
 	}
@@ -58,14 +66,17 @@ public class CustomerDAOImpl implements CustomerDAO {
 		try {
 			conn = getConnect();
 			if(!isExist(cust.getCust_id(), conn)) {
-				String query = "INSERT INTO customer(id,name,cust_id,phone,email,age) VALUES(seq_id,?,?,?,?,?)";
+				String query = "INSERT INTO customer(cust_seq,name,cust_id,phone,email,age) VALUES(seq.NEXTVAL,?,?,?,?,?)";
+//				String query = "INSERT INTO member(id,name,email,phone) VALUES(seq_id.NEXTVAL,?,?,?)";
 				ps = conn.prepareStatement(query);
+				System.out.println(ps+ "되냐...?");
 				ps.setString(1, cust.getName());
 				ps.setString(2, cust.getCust_id());
 				ps.setString(3, cust.getPhone());
 				ps.setString(4, cust.getEmail());
 				ps.setInt(5, cust.getAge());
 				System.out.println(ps.executeUpdate()+" ROW INSERT OK");
+				System.out.println("잘 ... 되냐?");
 			} else {
 				throw new DuplicateException("Customer is already exist");
 			}
