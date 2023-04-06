@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import com.mrs.dto.Customer;
 import com.mrs.dto.Movie;
 import com.mrs.dto.Reservation;
-import com.mrs.dto.Seat;
 import com.mrs.exception.DuplicateException;
 import com.mrs.exception.InvalidTransactionException;
 import com.mrs.exception.RecordNotFoundException;
@@ -127,7 +126,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 		ArrayList<Movie> movies = new ArrayList<>();
 		try {
 			conn = getConnect();
-			String query = "SELECT code, m_name, d_name, genre, company, grade FROM movie";
+			String query = "SELECT code, m_name, d_name, genre, company, grade, capacity FROM movie";
 			ps = conn.prepareStatement(query);
 			rs = ps.executeQuery();
 			while(rs.next()) {
@@ -137,7 +136,8 @@ public class CustomerDAOImpl implements CustomerDAO {
 						rs.getString("d_name"),
 						rs.getString("genre"), 
 						rs.getString("company"), 
-						rs.getString("grade")));
+						rs.getString("grade"),
+						rs.getInt("capacity")));
 			}
 		} finally {
 			closeAll(rs, ps, conn);
@@ -191,51 +191,51 @@ public class CustomerDAOImpl implements CustomerDAO {
 		return r;
 	}
 
-	@Override
-	public ArrayList<Seat> getSeatList() throws SQLException {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		ArrayList<Seat> seats = new ArrayList<>();
-		try {
-			conn = getConnect();
-			String query = "SELECT seat_code, seat_name, seat_state,rsv_code FROM seat";
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while(rs.next()) {
-				seats.add(new Seat(rs.getInt("seat_code"), rs.getString("seat_name"),rs.getBoolean("seat_state"), rs.getInt("rsv_code")));
-			}
-		} finally {
-			closeAll(rs, ps, conn);
-		}
-		return seats;
-	}
-
-	@Override
-	// 한 예약에 해당하는 seat의 seat_state를 변경하는 것이 목적
-	// seat상태 변경을 위해서 seat_code와 rsv_code가 모두 필요
-	// seat가 Exist한지 check할 필요가 없음
-	// 아래대로 한다? 뭔가 아닌거같은데..
-	// UPDATE seat SET seat_state=? WHERE seat_code=?;
-	// 영화가 끝나면 모든 seat를 available 할 필요가 없긴하네
-	public void updateSeat(Seat seat) throws SQLException, RecordNotFoundException {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		try {
-			conn = getConnect();
-//			if(isExist(seat.getSeat_code(), conn)) {
-				String query = "UPDATE seat SET seat_state=? WHERE seat_code=?";
-				ps = conn.prepareStatement(query);
-				ps.setBoolean(1, seat.isSeat_state());
-				ps.setInt(2, seat.getSeat_code());
-				System.out.println(ps.executeUpdate()+" ROW UPDATE OK");
-//			} else {
-//				throw new RecordNotFoundException("No such a customer");
+//	@Override
+//	public ArrayList<Seat> getSeatList() throws SQLException {
+//		Connection conn = null;
+//		PreparedStatement ps = null;
+//		ResultSet rs = null;
+//		ArrayList<Seat> seats = new ArrayList<>();
+//		try {
+//			conn = getConnect();
+//			String query = "SELECT seat_code, seat_name, seat_state,rsv_code FROM seat";
+//			ps = conn.prepareStatement(query);
+//			rs = ps.executeQuery();
+//			while(rs.next()) {
+//				seats.add(new Seat(rs.getInt("seat_code"), rs.getString("seat_name"),rs.getBoolean("seat_state"), rs.getInt("rsv_code")));
 //			}
-		} finally {
-			closeAll(ps, conn);
-		}
-	}
+//		} finally {
+//			closeAll(rs, ps, conn);
+//		}
+//		return seats;
+//	}
+
+//	@Override
+//	// 한 예약에 해당하는 seat의 seat_state를 변경하는 것이 목적
+//	// seat상태 변경을 위해서 seat_code와 rsv_code가 모두 필요
+//	// seat가 Exist한지 check할 필요가 없음
+//	// 아래대로 한다? 뭔가 아닌거같은데..
+//	// UPDATE seat SET seat_state=? WHERE seat_code=?;
+//	// 영화가 끝나면 모든 seat를 available 할 필요가 없긴하네
+//	public void updateSeat(Seat seat) throws SQLException, RecordNotFoundException {
+//		Connection conn = null;
+//		PreparedStatement ps = null;
+//		try {
+//			conn = getConnect();
+////			if(isExist(seat.getSeat_code(), conn)) {
+//				String query = "UPDATE seat SET seat_state=? WHERE seat_code=?";
+//				ps = conn.prepareStatement(query);
+//				ps.setBoolean(1, seat.isSeat_state());
+//				ps.setInt(2, seat.getSeat_code());
+//				System.out.println(ps.executeUpdate()+" ROW UPDATE OK");
+////			} else {
+////				throw new RecordNotFoundException("No such a customer");
+////			}
+//		} finally {
+//			closeAll(ps, conn);
+//		}
+//	}
 
 	@Override
 	public void buyTicket(String cust_id, String sche_code, String seat_name) throws SQLException {

@@ -36,8 +36,8 @@ public interface CustomerDAO {
    Reservation getReservation(int rsv_code) throws SQLException;
 
 	//비지니스 로직
-   ArrayList<Seat> getSeatList() throws SQLException; // 빈 Seat 목록 조회
-   public void updateSeat(Seat seat) throws SQLException, RecordNotFoundException; // seat상태변경
+//   ArrayList<Seat> getSeatList() throws SQLException; // 빈 Seat 목록 조회
+//   void updateSeat(Seat seat) throws SQLException, RecordNotFoundException; // seat상태변경
    void buyTicket(String cust_id, String sche_code, String seat_name) throws SQLException;
    void refundTicket(String rsv_code) throws SQLException,InvalidTransactionException,RecordNotFoundException;
 	
