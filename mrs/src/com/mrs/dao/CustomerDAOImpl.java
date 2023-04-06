@@ -254,7 +254,7 @@ public class CustomerDAOImpl implements CustomerDAO {
                 int newCapacity; // 구매하는 경우                
                 if(flag) newCapacity = c-1;
                 else newCapacity = c+1;
-                String query1 = "UPDATE movie SET capacity=? WHERE movie_code=?";
+                String query1 = "UPDATE movie SET capacity=? WHERE code=?";
 
                 ps = conn.prepareStatement(query1);
                 ps.setInt(1, newCapacity);
@@ -277,7 +277,6 @@ public class CustomerDAOImpl implements CustomerDAO {
         try {
             conn=  getConnect();
 
-            rs = ps.executeQuery();
             if(updateCapacity(movie_code, true)) {
 
             	// 현재 날짜 구하기
@@ -288,7 +287,7 @@ public class CustomerDAOImpl implements CustomerDAO {
          
                 // 포맷 적용
                 String formatedNow = now.format(formatter);
-                String query1 = "INSERT reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code) VALUES(seq.NEXTVAL,?,?,?,?)";
+                String query1 = "INSERT INTO reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code) VALUES(seq.NEXTVAL,?,?,?,?)";
                 ps = conn.prepareStatement(query1);
                 ps.setString(1, formatedNow);
                 ps.setString(2, "자유석");
@@ -321,16 +320,7 @@ public class CustomerDAOImpl implements CustomerDAO {
         try {
             conn= getConnect();
 
-            rs = ps.executeQuery();
             if(updateCapacity(movie_code, false)) {
-            	// 현재 날짜 구하기
-                LocalDate now = LocalDate.now();
-         
-                // 포맷 정의
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-         
-                // 포맷 적용
-                String formatedNow = now.format(formatter);
                 String query1 = "DELETE reservation WHERE cust_id=? AND movie_code=?";
                 ps = conn.prepareStatement(query1);
                 ps.setString(1, cust_id);
