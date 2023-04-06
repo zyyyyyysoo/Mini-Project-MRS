@@ -7,7 +7,10 @@ public class Movie {
 	private String genre;
 	private String company;
 	private String grade;
-	public Movie(int code, String m_name, String d_name, String genre, String company, String grade) {
+	private int capacity;
+	private static final int D_CAPACITY = 50;
+	
+	public Movie(int code, String m_name, String d_name, String genre, String company, String grade, int capacity) {
 		super();
 		this.code = code;
 		this.m_name = m_name;
@@ -15,7 +18,12 @@ public class Movie {
 		this.genre = genre;
 		this.company = company;
 		this.grade = grade;
+		this.capacity = capacity;
 	}
+	public Movie(int code, String m_name, String d_name, String genre, String company, String grade) {
+		this(code, m_name, d_name, genre, company, grade, D_CAPACITY);
+	}
+	
 	public int getCode() {
 		return code;
 	}
