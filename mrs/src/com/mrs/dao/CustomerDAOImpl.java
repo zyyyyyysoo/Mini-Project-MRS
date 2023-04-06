@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import com.mrs.dto.Customer;
@@ -137,12 +139,12 @@ public class CustomerDAOImpl implements CustomerDAO {
 		ArrayList<Movie> movies = new ArrayList<>();
 		try {
 			conn = getConnect();
-			String query = "SELECT code, m_name, d_name, genre, company, grade, capacity FROM movie";
+			String query = "SELECT movie_code, m_name, d_name, genre, company, grade, capacity FROM movie";
 			ps = conn.prepareStatement(query);
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				movies.add(new Movie(
-						rs.getInt("code"), 
+						rs.getInt("movie_code"), 
 						rs.getString("m_name"), 
 						rs.getString("d_name"),
 						rs.getString("genre"), 
@@ -202,6 +204,86 @@ public class CustomerDAOImpl implements CustomerDAO {
 		return r;
 	}
 
+	@Override
+	public boolean updateCapacity(int code) throws SQLException {
+		Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Boolean isPossible = false;
+        try {
+            conn = getConnect();
+
+            String query = "SELECT capacity FROM movie WHERE movie_code=?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, code);
+
+            rs = ps.executeQuery();
+            if(rs.next()) {
+                int c=rs.getInt("capacity"); //c는 현재 남아 있는 좌석 수
+                int newCapacity = c-1; // 구매하는 경우
+                String query1 = "UPDATE movie SET capacity=? WHERE movie_code=?";
+                ps = conn.prepareStatement(query1);
+                ps.setInt(1, newCapacity);
+                ps.setInt(2, code);
+                
+                System.out.println(ps.executeUpdate()+" row updateCapacity()....UPDATE OK"); 
+                isPossible = true;
+            } 
+        }finally {
+            closeAll(rs, ps, conn);
+        }
+        return isPossible;
+	}
+
+	@Override
+	public void buyTicket(String cust_id, int movie_code) throws SQLException {
+		Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn=  getConnect();
+
+            rs = ps.executeQuery();
+            if(updateCapacity(movie_code)) {
+            	// 현재 날짜 구하기
+                LocalDate now = LocalDate.now();
+         
+                // 포맷 정의
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+         
+                // 포맷 적용
+                String formatedNow = now.format(formatter);
+                String query1 = "INSERT reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code) VALUES(seq.NEXTVAL,?,?,?,?)";
+                ps = conn.prepareStatement(query1);
+                ps.setString(1, formatedNow);
+                ps.setString(2, "자유석");
+                ps.setString(3, "예매완료");
+                ps.setInt(4, movie_code);
+                
+                System.out.println(ps.executeUpdate()+" row buyTicket()....INSERT OK");
+            }
+//	            else { //주식이 없는 경우..
+//	                //INSERT
+//	                String query2 ="INSERT INTO shares (ssn, symbol, quantity) VALUES(?,?,?)";
+//	                ps = conn.prepareStatement(query2);
+//	                ps.setString(1, ssn);
+//	                ps.setString(2, symbol);
+//	                ps.setInt(3, quantity);
+//
+//	                System.out.println(ps.executeUpdate()+" row buyShares()....INSERT OK");
+//	            }
+        }finally {
+            closeAll(rs, ps, conn);
+        }
+	}
+
+	@Override
+	public void refundTicket(String cust_id, int movie_code)
+			throws SQLException, InvalidTransactionException, RecordNotFoundException {
+		// TODO Auto-generated method stub
+		
+	}
+
 //	@Override
 //	public ArrayList<Seat> getSeatList() throws SQLException {
 //		Connection conn = null;
@@ -248,17 +330,6 @@ public class CustomerDAOImpl implements CustomerDAO {
 //		}
 //	}
 
-	@Override
-	public void buyTicket(String cust_id, String sche_code, String seat_name) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public void refundTicket(String rsv_code)
-			throws SQLException, InvalidTransactionException, RecordNotFoundException {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

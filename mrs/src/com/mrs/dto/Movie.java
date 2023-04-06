@@ -1,7 +1,7 @@
 package com.mrs.dto;
 
 public class Movie {
-	private int code;
+	private int movie_code;
 	private String m_name;
 	private String d_name;
 	private String genre;
@@ -10,9 +10,9 @@ public class Movie {
 	private int capacity;
 	private static final int D_CAPACITY = 50;
 	
-	public Movie(int code, String m_name, String d_name, String genre, String company, String grade, int capacity) {
+	public Movie(int movie_code, String m_name, String d_name, String genre, String company, String grade, int capacity) {
 		super();
-		this.code = code;
+		this.movie_code = movie_code;
 		this.m_name = m_name;
 		this.d_name = d_name;
 		this.genre = genre;
@@ -24,11 +24,11 @@ public class Movie {
 		this(code, m_name, d_name, genre, company, grade, D_CAPACITY);
 	}
 	
-	public int getCode() {
-		return code;
+	public int getMovie_code() {
+		return movie_code;
 	}
-	public void setCode(int code) {
-		this.code = code;
+	public void setMovie_code(int movie_code) {
+		this.movie_code = movie_code;
 	}
 	public String getM_name() {
 		return m_name;
