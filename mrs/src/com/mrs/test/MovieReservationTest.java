@@ -28,10 +28,16 @@ public class MovieReservationTest {
 //		}
 		
 		try {
-			dao.buyTicket("mj25801", 1);
+			dao.buyTicket("jh1997", 1);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		
+//		try {
+//			dao.getMovieGradebyAge(12);
+//		}catch(SQLException e) {
+//			System.out.println(e.getMessage());
+//		}
 	}
 	
 //	static {

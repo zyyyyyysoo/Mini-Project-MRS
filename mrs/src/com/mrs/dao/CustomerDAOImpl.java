@@ -360,6 +360,28 @@ public class CustomerDAOImpl implements CustomerDAO {
 //		}
 //	}
 
+	@Override
+	public void getMovieGradebyAge(int age) throws SQLException {
+		System.out.println(age);
+	    Connection conn = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
 
+	    try {
+	        conn = getConnect();
+	        System.out.println("들어왔냐?");
+	        String query = "SELECT m_name, grade FROM movie WHERE  SUBSTR(grade,1,2) = '?' grade='전체관람가'";
+	        
+	        ps = conn.prepareStatement(query);
+	        ps.setInt(1, age);
+	        System.out.println("왜왜왜");
+	        rs = ps.executeQuery();
+	        while(rs.next()) {
+	            System.out.println(rs.getString("m_name")+" | "+rs.getString("grade"));
+	        }
+	    } finally {
+	        closeAll(rs, ps, conn);
+	    }
+	}
 	
 }

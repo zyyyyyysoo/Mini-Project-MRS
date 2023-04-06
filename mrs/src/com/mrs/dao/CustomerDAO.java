@@ -45,6 +45,7 @@ public interface CustomerDAO {
 //   void updateSeat(Seat seat) throws SQLException, RecordNotFoundException; // seat상태변경
    void buyTicket(String cust_id, int movie_code) throws SQLException;
    void refundTicket(String cust_id, int movie_code) throws SQLException,InvalidTransactionException,RecordNotFoundException;
+void getMovieGradebyAge(int age) throws SQLException;
 	
    //init
 //   void initSeat() // 현재시간=상영종료시간 -> 모든 시트 사용 가능(이거 아닌데..)
