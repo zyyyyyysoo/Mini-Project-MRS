@@ -36,7 +36,7 @@ public interface CustomerDAO {
    ArrayList<Reservation> getReservationList(int cust_seq) throws SQLException; // Customer Movie List
    Reservation getReservation(int rsv_code) throws SQLException;
    // 티켓을 구매할 때 영화 테이블의 capacity를 줄이는 함수
-   boolean updateCapacity(int code) throws SQLException;
+   boolean updateCapacity(int code, boolean flag) throws SQLException;
    // 티켓을 환불할 때 영화 테이블의 capacity를 늘이는 함수
    
    

@@ -236,7 +236,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 	}
 
 	@Override
-	public boolean updateCapacity(int code) throws SQLException {
+	public boolean updateCapacity(int code, boolean flag) throws SQLException {
 		Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -251,8 +251,11 @@ public class CustomerDAOImpl implements CustomerDAO {
             rs = ps.executeQuery();
             if(rs.next()) {
                 int c=rs.getInt("capacity"); //c는 현재 남아 있는 좌석 수
-                int newCapacity = c-1; // 구매하는 경우
+                int newCapacity; // 구매하는 경우                
+                if(flag) newCapacity = c-1;
+                else newCapacity = c+1;
                 String query1 = "UPDATE movie SET capacity=? WHERE code=?";
+
                 ps = conn.prepareStatement(query1);
                 ps.setInt(1, newCapacity);
                 ps.setInt(2, code);
@@ -274,7 +277,8 @@ public class CustomerDAOImpl implements CustomerDAO {
         try {
             conn=  getConnect();
 
-            if(updateCapacity(movie_code)) {
+            if(updateCapacity(movie_code, true)) {
+
             	// 현재 날짜 구하기
                 LocalDate now = LocalDate.now();
          
@@ -283,7 +287,7 @@ public class CustomerDAOImpl implements CustomerDAO {
          
                 // 포맷 적용
                 String formatedNow = now.format(formatter);
-                String query1 = "INSERT reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code) VALUES(seq.NEXTVAL,?,?,?,?)";
+                String query1 = "INSERT INTO reservation (rsv_code, rsv_date, seat_name, rsv_state, movie_code) VALUES(seq.NEXTVAL,?,?,?,?)";
                 ps = conn.prepareStatement(query1);
                 ps.setString(1, formatedNow);
                 ps.setString(2, "자유석");
@@ -310,8 +314,23 @@ public class CustomerDAOImpl implements CustomerDAO {
 	@Override
 	public void refundTicket(String cust_id, int movie_code)
 			throws SQLException, InvalidTransactionException, RecordNotFoundException {
-		// TODO Auto-generated method stub
-		
+		Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn= getConnect();
+
+            if(updateCapacity(movie_code, false)) {
+                String query1 = "DELETE reservation WHERE cust_id=? AND movie_code=?";
+                ps = conn.prepareStatement(query1);
+                ps.setString(1, cust_id);
+                ps.setInt(2, movie_code);
+
+                System.out.println(ps.executeUpdate()+" row refundTicket()....DELETE OK");
+            }
+        }finally {
+            closeAll(rs, ps, conn);
+        }
 	}
 
 //	@Override
